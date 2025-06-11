@@ -1,1 +1,0 @@
-This is a sample file created to be used in the pyspark word count program, refer Pyspark Programs.ipynb
