@@ -1,0 +1,6 @@
+pandas
+numpy
+pyspark
+notebook
+azure-cli
+databricks-cli
