@@ -1,0 +1,278 @@
+**<Company> India - Senior Data Engineer Interview Questions & Sample Answers (2023–2024)**
+
+## **Python**
+
+- **Find the most frequent element in a list (return element and its count).**  
+    Use a dictionary or `collections.Counter` to count occurrences.  
+    **Example:**  
+    ```python
+    from collections import Counter
+    lst = [1, 2, 2, 3, 1, 2]
+    counter = Counter(lst)
+    element, count = counter.most_common(1)[0]
+    print(element, count)  # Output: 2 3
+    ```
+
+- **Merge two sorted lists into one sorted list.**  
+    Use two pointers or `heapq.merge`.  
+    **Example:**  
+    ```python
+    a = [1, 3, 5]
+    b = [2, 4, 6]
+    merged = sorted(a + b)
+    # Or, for large lists:
+    import heapq
+    merged = list(heapq.merge(a, b))
+    ```
+
+- **Find the missing number in an array of integers from 0 to n.**  
+    Use sum formula or XOR.  
+    **Example:**  
+    ```python
+    arr = [0, 1, 3]
+    n = len(arr)
+    missing = sum(range(n+1)) - sum(arr)
+    print(missing)  # Output: 2
+    ```
+
+- **Search for a target in a rotated sorted array (return index or -1).**  
+    Use modified binary search.  
+    **Example:**  
+    ```python
+    def search(nums, target):
+         left, right = 0, len(nums) - 1
+         while left <= right:
+              mid = (left + right) // 2
+              if nums[mid] == target:
+                    return mid
+              if nums[left] <= nums[mid]:
+                    if nums[left] <= target < nums[mid]:
+                         right = mid - 1
+                    else:
+                         left = mid + 1
+              else:
+                    if nums[mid] < target <= nums[right]:
+                         left = mid + 1
+                    else:
+                         right = mid - 1
+         return -1
+    ```
+
+- **Perform operations on dicts/lists: find max/min, filter unique elements.**  
+     - Max/min: `max(lst)`, `min(lst)`
+     - Unique: `set(lst)`
+     - Dict max: `max(d, key=d.get)`
+     - Example:  
+        ```python
+        lst = [1, 2, 2, 3]
+        print(max(lst), min(lst))  # 3 1
+        print(set(lst))  # {1, 2, 3}
+        d = {'a': 1, 'b': 3}
+        print(max(d, key=d.get))  # 'b'
+        ```
+
+## **SQL**
+
+- **Top 5 customers by order amount in last 6 months per country.**  
+     Use window functions to rank customers within each country.  
+     ```sql
+     SELECT country, customer_id, SUM(order_amount) AS total
+     FROM orders
+     WHERE order_date >= DATEADD(month, -6, CURRENT_DATE)
+     GROUP BY country, customer_id
+     QUALIFY ROW_NUMBER() OVER (PARTITION BY country ORDER BY total DESC) <= 5
+     ```
+     *Explanation:*  
+     - `SUM(order_amount)` aggregates orders per customer.
+     - `ROW_NUMBER()` ranks customers by total per country.
+     - `QUALIFY` filters top 5 per country.
+
+- **Find the 2nd highest salary in the Engineering department.**  
+     Use subquery or window function.  
+     ```sql
+     SELECT MAX(salary) AS second_highest
+     FROM employees
+     WHERE department = 'Engineering'
+        AND salary < (SELECT MAX(salary) FROM employees WHERE department = 'Engineering')
+     ```
+     *Explanation:*  
+     - Finds the max salary less than the highest.
+
+- **Use of window functions, GROUP BY, UNION in complex queries.**  
+     - Window functions: Perform calculations across rows (e.g., `ROW_NUMBER()`, `SUM() OVER`).
+     - `GROUP BY`: Aggregates data (e.g., sum, count).
+     - `UNION`: Combines results from multiple queries, removing duplicates.
+
+- **Differences between star and snowflake schemas.**  
+     - **Star:** Denormalized, dimension tables directly linked to fact table. Simpler, faster queries.
+     - **Snowflake:** Normalized, dimensions split into sub-dimensions. Saves space, more joins.
+
+- **Implement SCD Type 2 using SQL.**  
+     Add `valid_from`, `valid_to`, `is_current` columns.  
+     - On change, insert new row with updated values and set `is_current=1`.
+     - Update previous row's `valid_to` and set `is_current=0`.
+
+- **Explain clustered vs non-clustered indexes and performance tuning.**  
+     - **Clustered:** Alters physical order of data, only one per table, fast for range queries.
+     - **Non-clustered:** Separate structure, many per table, points to data rows.
+     - **Tuning:** Index frequently queried columns, avoid over-indexing.
+
+## **Databricks / Delta Lake**
+
+- **Explain the Medallion architecture (bronze/silver/gold).**  
+     - **Bronze:** Raw, ingested data.
+     - **Silver:** Cleaned, joined, and enriched data.
+     - **Gold:** Aggregated, business-ready data for analytics.
+
+- **What is Z-Order (ZORDER) in Delta Lake?**  
+     Data clustering technique that organizes data files to speed up queries on specific columns by colocating related data.
+
+- **Describe Unity Catalog and Delta Sharing.**  
+     - **Unity Catalog:** Centralized governance for data and AI assets, manages permissions, lineage, and auditing.
+     - **Delta Sharing:** Open protocol for secure, real-time data sharing across organizations.
+
+- **Explain Autoloader and streaming ingestion in Databricks.**  
+     Autoloader automatically detects and loads new files from cloud storage into Delta tables, supporting scalable and incremental ingestion.
+
+- **Features like time-travel, table constraints, metadata management.**  
+     - **Time-travel:** Query previous versions of a table for auditing or rollback.
+     - **Constraints:** Enforce data quality (e.g., NOT NULL, UNIQUE).
+     - **Metadata:** Track schema changes, lineage, and table history.
+
+## **PySpark**
+
+- **Calculate salary as percentage of department total using PySpark.**
+     ```python
+     from pyspark.sql import Window
+     from pyspark.sql.functions import sum, col
+     w = Window.partitionBy('department')
+     df = df.withColumn('dept_total', sum('salary').over(w))
+     df = df.withColumn('pct', col('salary')/col('dept_total'))
+     ```
+     *Explanation:*  
+     - Window partitions by department, sums salary.
+     - Each row gets its salary divided by department total.
+
+- **Transformations vs actions in PySpark.**  
+     - **Transformations:** Lazy, define a computation plan (e.g., `map`, `filter`).
+     - **Actions:** Trigger execution and return results (e.g., `collect`, `count`).
+
+- **RDD vs DataFrame APIs and when to use which.**  
+     - **RDD:** Low-level, more control, used for complex transformations.
+     - **DataFrame:** High-level, optimized, easier for SQL-like operations and performance.
+
+- **Difference between repartition() and coalesce().**  
+     - `repartition()`: Increases or decreases partitions, involves full shuffle.
+     - `coalesce()`: Only decreases partitions, minimizes data movement.
+
+- **Explain Adaptive Query Execution (AQE) and data skew handling.**  
+     AQE dynamically optimizes query plans at runtime, splits skewed partitions, and adjusts join strategies for better performance.
+
+## **Data Engineering Concepts**
+
+- **Describe one of your ETL pipelines (source, transformation, load).**  
+     Example: Ingest CSV from S3, clean and join data in Spark, load to Redshift.  
+     - **Source:** S3 bucket with raw CSV files.
+     - **Transformation:** Data cleaning, joining, enrichment in Spark.
+     - **Load:** Write processed data to Redshift for analytics.
+
+- **Difference between Data Warehouse, Data Lake, and Lakehouse.**  
+     - **Warehouse:** Structured, schema-on-write, optimized for SQL queries.
+     - **Lake:** Stores raw data in any format, schema-on-read, flexible.
+     - **Lakehouse:** Combines both, supports ACID transactions and BI workloads.
+
+- **Fact vs dimension tables; OLAP vs OLTP.**  
+     - **Fact:** Quantitative, transactional data (e.g., sales).
+     - **Dimension:** Descriptive attributes (e.g., product, customer).
+     - **OLAP:** Analytical, batch processing, complex queries.
+     - **OLTP:** Transactional, real-time, simple queries.
+
+- **CAP theorem and its implications.**  
+     In distributed systems, can only guarantee two of Consistency, Availability, Partition tolerance.  
+     - E.g., NoSQL databases may sacrifice consistency for availability.
+
+- **Cloud storage configuration: permissions, encryption, versioning.**  
+     - Use IAM roles/policies for access control.
+     - Enable server-side encryption (SSE) for data at rest.
+     - Enable versioning to recover from accidental deletions or overwrites.
+
+- **Partitioning/bucketing to optimize performance.**  
+     - Partition by columns frequently used in filters (e.g., date).
+     - Bucketing helps optimize joins by grouping data into fixed buckets.
+
+- **Job orchestration tools (Airflow, Glue) and CI/CD practices.**  
+     - Use DAGs to define dependencies and schedule jobs.
+     - Automate testing, deployment, and rollback using CI/CD pipelines.
+
+- **Basics of Hadoop, Hive, and Spark architecture.**  
+     - **Hadoop:** Distributed storage (HDFS) and batch processing (MapReduce).
+     - **Hive:** SQL-like querying on Hadoop data.
+     - **Spark:** In-memory processing, supports batch and streaming.
+
+## **System Design / Architecture**
+
+- **Fetch data from REST API using AWS Lambda, API Gateway, and S3.**  
+     - API Gateway triggers Lambda.
+     - Lambda fetches data from REST API, processes it, and stores results in S3.
+
+- **Design a real-time streaming pipeline (Kafka/Kinesis/S3 to DWH).**  
+     - Ingest data via Kafka/Kinesis.
+     - Process with Spark Streaming or Flink.
+     - Store processed data in S3.
+     - Load into Data Warehouse (e.g., Redshift, Snowflake).
+
+- **Migrate on-prem SQL data to AWS cloud.**  
+     - Use AWS DMS for schema and data migration.
+     - Optionally, use custom ETL for transformations.
+
+- **Incremental loads from S3 using Glue/Data Pipeline.**  
+     - Track last processed timestamp or file.
+     - Process only new or updated files in each run.
+
+- **Partitioning strategy for optimized queries on S3.**  
+     - Partition by date or other frequently queried columns to reduce scan size.
+
+- **Using Glue or Airflow for job orchestration.**  
+     - Define workflows, schedule jobs, manage dependencies and retries.
+
+- **Monitoring and logging of Spark jobs (CloudWatch, logs).**  
+     - Use CloudWatch for metrics and alerts.
+     - Enable detailed logging for debugging and auditing.
+
+- **Design end-to-end data platforms with fault tolerance.**  
+     - Use retries, checkpoints, redundant storage, and monitoring to ensure reliability.
+
+## **Behavioral and Situational**
+
+- **Tell me about yourself and recent projects.**  
+     Prepare a concise summary of your background, technical skills, and key projects relevant to the role.
+
+- **Describe a time you led a team or handled conflict.**  
+     Use STAR (Situation, Task, Action, Result) to structure your answer, focusing on leadership and resolution skills.
+
+- **What do you know about <Company>?**  
+     Research the company’s products, culture, recent news, and industry position.
+
+- **Why are you seeking a new role?**  
+     Focus on professional growth, new challenges, and alignment with your career goals.
+
+- **What are your strengths and weaknesses?**  
+     Highlight strengths relevant to the job. For weaknesses, mention steps you’re taking to improve.
+
+- **Describe a challenging project you handled.**  
+     Explain the challenge, your approach, and the positive outcome.
+
+- **What are your expectations from this role?**  
+     Discuss learning opportunities, impact, and career growth.
+
+- **How soon can you join and your preferred location?**  
+     Be honest about your notice period and location preferences.
+
+## **Tips & Patterns**
+
+- Review all technologies listed on your resume in depth.
+- Practice SQL, PySpark, and Databricks coding problems.
+- Expect coding tasks in initial rounds.
+- Final rounds focus on architecture, optimization, and system design.
+- Unity Catalog and Delta Lake optimizations are common topics.
+- Cloud (AWS/Azure) knowledge is often tested.
