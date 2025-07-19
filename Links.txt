@@ -1,0 +1,11 @@
+
+Azure Databricks E2E project: https://www.youtube.com/watch?v=4uKRzDf0zIc&t=2527s
+Incrementation loading: https://www.youtube.com/watch?v=GjV2m8b9fNY
+Wafa Studio YT channel: https://www.youtube.com/@WafaStudies
+Incemental load in Azure data factory: https://www.youtube.com/watch?v=cZ3RW8KUz2E&t=1s
+Databricks Rest API Documentation: https://docs.databricks.com/api/azure/workspace/introduction
+
+
+Tools:
+drawio: https://www.drawio.com
+Creatly: https://creately.com/tour/?ref=home&msclkid=e0208df356bd12ae75a6e5887dc65ceb
