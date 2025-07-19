@@ -31,10 +31,17 @@ flowchart TD
     B -->|Launches| C[Executors]
     C -->|Executes| D[Tasks]
     D -->|Returns Results| A
+    
+    A_desc["Driver Program:\n- Runs main application\n- Creates SparkContext\n- Coordinates execution"]
+    B_desc["Cluster Manager:\n- Allocates resources\n- Manages worker nodes\n- YARN, Mesos, Standalone"]
+    C_desc["Executors:\n- Run computations\n- Store data\n- Return results"]
+    D_desc["Tasks:\n- Actual work units"]
+    
+    A -.-> A_desc
+    B -.-> B_desc
+    C -.-> C_desc
+    D -.-> D_desc
 ```
-- **Driver Program:** Runs the main function and creates SparkContext.
-- **Cluster Manager:** Allocates resources (YARN, Mesos, Standalone).
-- **Executors:** Run computations and store data.
 
 ---
 

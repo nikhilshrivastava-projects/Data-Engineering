@@ -171,10 +171,10 @@
 ## **Data Engineering Concepts**
 
 - **Describe one of your ETL pipelines (source, transformation, load).**  
-     Example: Ingest CSV from S3, clean and join data in Spark, load to Redshift.  
-     - **Source:** S3 bucket with raw CSV files.
+     Example: Ingest CSV from Azure Blob Storage, clean and join data in Spark, load to Azure Synapse Analytics.  
+     - **Source:** Azure Blob Storage with raw CSV files.
      - **Transformation:** Data cleaning, joining, enrichment in Spark.
-     - **Load:** Write processed data to Redshift for analytics.
+     - **Load:** Write processed data to Azure Synapse Analytics for analytics.
 
 - **Difference between Data Warehouse, Data Lake, and Lakehouse.**  
      - **Warehouse:** Structured, schema-on-write, optimized for SQL queries.
@@ -192,16 +192,16 @@
      - E.g., NoSQL databases may sacrifice consistency for availability.
 
 - **Cloud storage configuration: permissions, encryption, versioning.**  
-     - Use IAM roles/policies for access control.
-     - Enable server-side encryption (SSE) for data at rest.
-     - Enable versioning to recover from accidental deletions or overwrites.
+     - Use Azure RBAC and Access Control for access management.
+     - Enable Azure Storage Service Encryption (SSE) for data at rest.
+     - Enable blob versioning to recover from accidental deletions or overwrites.
 
 - **Partitioning/bucketing to optimize performance.**  
      - Partition by columns frequently used in filters (e.g., date).
      - Bucketing helps optimize joins by grouping data into fixed buckets.
 
-- **Job orchestration tools (Airflow, Glue) and CI/CD practices.**  
-     - Use DAGs to define dependencies and schedule jobs.
+- **Job orchestration tools (Airflow, Data Factory) and CI/CD practices.**  
+     - Use DAGs or Azure Data Factory pipelines to define dependencies and schedule jobs.
      - Automate testing, deployment, and rollback using CI/CD pipelines.
 
 - **Basics of Hadoop, Hive, and Spark architecture.**  
@@ -211,32 +211,32 @@
 
 ## **System Design / Architecture**
 
-- **Fetch data from REST API using AWS Lambda, API Gateway, and S3.**  
-     - API Gateway triggers Lambda.
-     - Lambda fetches data from REST API, processes it, and stores results in S3.
+- **Fetch data from REST API using Azure Functions, API Management, and Blob Storage.**  
+     - API Management triggers Azure Function.
+     - Azure Function fetches data from REST API, processes it, and stores results in Azure Blob Storage.
 
-- **Design a real-time streaming pipeline (Kafka/Kinesis/S3 to DWH).**  
-     - Ingest data via Kafka/Kinesis.
-     - Process with Spark Streaming or Flink.
-     - Store processed data in S3.
-     - Load into Data Warehouse (e.g., Redshift, Snowflake).
+- **Design a real-time streaming pipeline (Event Hubs/Stream Analytics/Blob Storage to DWH).**  
+     - Ingest data via Azure Event Hubs.
+     - Process with Azure Stream Analytics or Spark Streaming.
+     - Store processed data in Azure Blob Storage.
+     - Load into Data Warehouse (e.g., Azure Synapse Analytics).
 
-- **Migrate on-prem SQL data to AWS cloud.**  
-     - Use AWS DMS for schema and data migration.
+- **Migrate on-prem SQL data to Azure cloud.**  
+     - Use Azure Database Migration Service for schema and data migration.
      - Optionally, use custom ETL for transformations.
 
-- **Incremental loads from S3 using Glue/Data Pipeline.**  
+- **Incremental loads from Blob Storage using Data Factory/Data Pipeline.**  
      - Track last processed timestamp or file.
      - Process only new or updated files in each run.
 
-- **Partitioning strategy for optimized queries on S3.**  
+- **Partitioning strategy for optimized queries on Blob Storage.**  
      - Partition by date or other frequently queried columns to reduce scan size.
 
-- **Using Glue or Airflow for job orchestration.**  
+- **Using Data Factory or Airflow for job orchestration.**  
      - Define workflows, schedule jobs, manage dependencies and retries.
 
-- **Monitoring and logging of Spark jobs (CloudWatch, logs).**  
-     - Use CloudWatch for metrics and alerts.
+- **Monitoring and logging of Spark jobs (Azure Monitor, logs).**  
+     - Use Azure Monitor for metrics and alerts.
      - Enable detailed logging for debugging and auditing.
 
 - **Design end-to-end data platforms with fault tolerance.**  
@@ -275,4 +275,4 @@
 - Expect coding tasks in initial rounds.
 - Final rounds focus on architecture, optimization, and system design.
 - Unity Catalog and Delta Lake optimizations are common topics.
-- Cloud (AWS/Azure) knowledge is often tested.
+- Cloud (Azure/AWS) knowledge is often tested.
